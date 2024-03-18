@@ -75,11 +75,6 @@ public class ImperfectModels : BasePlugin, IPluginConfig<Config>
                 return;
             }
 
-            if (player.PlayerPawn.Value.MovementServices == null)
-            {
-                return;
-            }
-
             try
             {
                 player.PlayerPawn.Value.Render = Color.FromArgb(Config.DefaultAlpha, 255, 255, 255);
