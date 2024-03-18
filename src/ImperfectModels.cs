@@ -12,37 +12,18 @@ using System.Drawing;
 namespace ImperfectModels;
 
 [MinimumApiVersion(80)]
-public class ImperfectModels : BasePlugin, IPluginConfig<Config>
+public partial class ImperfectModels : BasePlugin, IPluginConfig<Config>
 {
     public override string ModuleName => "Imperfect-Models";
     public override string ModuleVersion => "1.0.0";
     public override string ModuleAuthor => "Imperfect Gamers - raz";
     public override string ModuleDescription => "A plugin for handling player models.";
+
     public Config Config { get; set; } = new Config();
 
     public override void Load(bool hotReload)
     {
-        RegisterEventHandler<EventPlayerConnectFull>((@event, info) =>
-        {
-            if (@event.Userid.IsValid)
-            {
-                var player = @event.Userid;
-
-                if (!player.IsValid || player.IsBot)
-                {
-                    return HookResult.Continue;
-                }
-                else
-                {
-                    OnPlayerConnect(player);
-                    return HookResult.Continue;
-                }
-            }
-            else
-            {
-                return HookResult.Continue;
-            }
-        });
+        RegisterPlayerEvents();
     }
 
     public override void Unload(bool hotReload)
@@ -59,116 +40,5 @@ public class ImperfectModels : BasePlugin, IPluginConfig<Config>
         }
 
         Config = config;
-    }
-
-    private void OnPlayerConnect(CCSPlayerController? player, bool isForBot = false)
-    {
-        try
-        {
-            if (player == null)
-            {
-                return;
-            }
-
-            if (player.PlayerPawn == null)
-            {
-                return;
-            }
-
-            try
-            {
-                player.PlayerPawn.Value.Render = Color.FromArgb(Config.DefaultAlpha, 255, 255, 255);
-                Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseModelEntity", "m_clrRender");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Something bad happened: {ex.Message}");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Something bad happened: {ex.Message}");
-        }
-    }
-
-    // Command for changing the player model alpha (transparency)
-    [ConsoleCommand("css_selfmodelalpha", "Changes the alpha of your player model")]
-    [CommandHelper(minArgs: 1, usage: "<number for alpha ex. 50>", whoCanExecute: CommandUsage.CLIENT_ONLY)]
-    [RequiresPermissions("@css/root")]
-    public void ChangeSelfModelAlphaCommand(CCSPlayerController? player, CommandInfo commandInfo)
-    {
-        /// This argument is 'css_modelalpha'
-        commandInfo.GetArg(0);
-
-        /// This argument is the number for the alpha
-        var alphaPercentage = commandInfo.GetArg(1);
-        int alphaPercentageInt = 0;
-
-        var intParseSuccess = int.TryParse(alphaPercentage, out alphaPercentageInt);
-
-        if (intParseSuccess)
-        {
-            try
-            {
-                player.PlayerPawn.Value.Render = Color.FromArgb(alphaPercentageInt, 255, 255, 255);
-                Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseModelEntity", "m_clrRender");
-
-                commandInfo.ReplyToCommand($"Player model alpha set to {alphaPercentage}");
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning("Something went wrong when setting the player model alpha {message}", ex.Message);
-
-                commandInfo.ReplyToCommand("Something went wrong when setting the player model alpha. Check error logs for more info.");
-            }
-        }
-        else
-        {
-            Logger.LogWarning("The number that was input was not correct.");
-            commandInfo.ReplyToCommand("The number that you input was not correct. Try a number between 1 and 255.");
-        }
-    }
-
-    // Command for changing all players model alpha (transparency)
-    [ConsoleCommand("css_modelalpha", "Changes the alpha of all player models")]
-    [CommandHelper(minArgs: 1, usage: "<number for alpha ex. 50>", whoCanExecute: CommandUsage.CLIENT_AND_SERVER)]
-    [RequiresPermissions("@css/root")]
-    public void ChangeModelAlphaCommand(CCSPlayerController? player, CommandInfo commandInfo)
-    {
-        /// This argument is 'css_modelalpha'
-        commandInfo.GetArg(0);
-
-        /// This argument is the number for the alpha
-        var alphaPercentage = commandInfo.GetArg(1);
-        int alphaPercentageInt = 0;
-
-        var connectedPlayers = Utilities.GetPlayers();
-
-        var intParseSuccess = int.TryParse(alphaPercentage, out alphaPercentageInt);
-
-        if (intParseSuccess)
-        {
-            try
-            {
-                foreach (var connectedPlayer in connectedPlayers)
-                {
-                    connectedPlayer.PlayerPawn.Value.Render = Color.FromArgb(alphaPercentageInt, 255, 255, 255);
-                    Utilities.SetStateChanged(connectedPlayer.PlayerPawn.Value, "CBaseModelEntity", "m_clrRender");
-                }
-
-                commandInfo.ReplyToCommand($"All player models alpha set to {alphaPercentage}");
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning("Something went wrong when setting the player model alpha {message}", ex.Message);
-
-                commandInfo.ReplyToCommand("Something went wrong when setting the player model alpha. Check error logs for more info.");
-            }
-        }
-        else
-        {
-            Logger.LogWarning("The number that was input was not correct.");
-            commandInfo.ReplyToCommand("The number that you input was not correct. Try a number between 1 and 255.");
-        }
     }
 }
