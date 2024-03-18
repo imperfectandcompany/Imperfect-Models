@@ -103,7 +103,7 @@ public class ImperfectModels : BasePlugin, IPluginConfig<Config>
 
             try
             {
-                player.PlayerPawn.Value.Render = Color.FromArgb(Config.DefaultAlpha, 254, 254, 254);
+                player.PlayerPawn.Value.Render = Color.FromArgb(Config.DefaultAlpha, 255, 255, 255);
                 Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseModelEntity", "m_clrRender");
             }
             catch (Exception ex)
@@ -152,7 +152,7 @@ public class ImperfectModels : BasePlugin, IPluginConfig<Config>
         {
             try
             {
-                player.PlayerPawn.Value.Render = Color.FromArgb(alphaPercentageInt, 254, 254, 254);
+                player.PlayerPawn.Value.Render = Color.FromArgb(alphaPercentageInt, 255, 255, 255);
                 Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseModelEntity", "m_clrRender");
 
                 commandInfo.ReplyToCommand($"Player model alpha set to {alphaPercentage}");
@@ -192,7 +192,7 @@ public class ImperfectModels : BasePlugin, IPluginConfig<Config>
             {
                 foreach (var connectedPlayer in ConnectedPlayers.Values)
                 {
-                    connectedPlayer.PlayerPawn.Value.Render = Color.FromArgb(alphaPercentageInt, 254, 254, 254);
+                    connectedPlayer.PlayerPawn.Value.Render = Color.FromArgb(alphaPercentageInt, 255, 255, 255);
                     Utilities.SetStateChanged(connectedPlayer.PlayerPawn.Value, "CBaseModelEntity", "m_clrRender");
                 }
 
