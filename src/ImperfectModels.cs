@@ -91,7 +91,7 @@ public class ImperfectModels : BasePlugin
             try
             {
                 ///  TODO: Set the default alpha from the config file
-                player.PlayerPawn.Value.Render = Color.FromArgb(75, 254, 254, 254);
+                player.PlayerPawn.Value.Render = Color.FromArgb(120, 254, 254, 254);
                 Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseModelEntity", "m_clrRender");
             }
             catch (Exception ex)
@@ -140,8 +140,10 @@ public class ImperfectModels : BasePlugin
         {
             try
             {
-                player.PlayerPawn.Value.Render = Color.FromArgb(alphaPercentageInt, 255, 255, 255);
+                player.PlayerPawn.Value.Render = Color.FromArgb(alphaPercentageInt, 254, 254, 254);
                 Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseModelEntity", "m_clrRender");
+
+                commandInfo.ReplyToCommand($"Player model alpha set to {alphaPercentage}");
             }
             catch (Exception ex)
             {
@@ -153,7 +155,7 @@ public class ImperfectModels : BasePlugin
         else
         {
             Logger.LogWarning("The number that was input was not correct.");
-            commandInfo.ReplyToCommand("The number that you input was not correct. Try a number between 1 and 100.");
+            commandInfo.ReplyToCommand("The number that you input was not correct. Try a number between 1 and 255.");
         }
     }
 
