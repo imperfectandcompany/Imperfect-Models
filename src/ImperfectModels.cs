@@ -15,7 +15,7 @@ namespace ImperfectModels;
 public partial class ImperfectModels : BasePlugin, IPluginConfig<Config>
 {
     public override string ModuleName => "Imperfect-Models";
-    public override string ModuleVersion => "1.0.0";
+    public override string ModuleVersion => "1.1.0";
     public override string ModuleAuthor => "Imperfect Gamers - raz";
     public override string ModuleDescription => "A plugin for handling player models.";
 
