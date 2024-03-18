@@ -103,8 +103,7 @@ public class ImperfectModels : BasePlugin, IPluginConfig<Config>
 
             try
             {
-                ///  TODO: Set the default alpha from the config file
-                player.PlayerPawn.Value.Render = Color.FromArgb(120, 254, 254, 254);
+                player.PlayerPawn.Value.Render = Color.FromArgb(Config.DefaultAlpha, 254, 254, 254);
                 Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseModelEntity", "m_clrRender");
             }
             catch (Exception ex)
