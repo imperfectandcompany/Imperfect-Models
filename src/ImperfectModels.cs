@@ -18,6 +18,8 @@ public class ImperfectModels : BasePlugin
     public override string ModuleAuthor => "Imperfect Gamers - raz";
     public override string ModuleDescription => "A plugin for handling player models.";
 
+    private Dictionary<int, CCSPlayerController> ConnectedPlayers = new Dictionary<int, CCSPlayerController>();
+
     public override void Load(bool hotReload)
     {
         RegisterEventHandler<EventPlayerConnectFull>((@event, info) =>
@@ -41,6 +43,21 @@ public class ImperfectModels : BasePlugin
                 return HookResult.Continue;
             }
         });
+
+        RegisterEventHandler<EventPlayerDisconnect>((@event, info) =>
+        {
+            var player = @event.Userid;
+
+            if (player.IsBot || !player.IsValid)
+            {
+                return HookResult.Continue;
+            }
+            else
+            {
+                OnPlayerDisconnect(player);
+                return HookResult.Continue;
+            }
+        });
     }
 
     public override void Unload(bool hotReload)
@@ -50,6 +67,10 @@ public class ImperfectModels : BasePlugin
 
     private void OnPlayerConnect(CCSPlayerController? player, bool isForBot = false)
     {
+        int playerSlot = player.Slot;
+
+        ConnectedPlayers[playerSlot] = new CCSPlayerController(player.Handle);
+
         try
         {
             if (player == null)
@@ -67,8 +88,6 @@ public class ImperfectModels : BasePlugin
                 return;
             }
 
-            int playerSlot = player.Slot;
-
             try
             {
                 ///  TODO: Set the default alpha from the config file
@@ -84,7 +103,23 @@ public class ImperfectModels : BasePlugin
         {
             Console.WriteLine($"Something bad happened: {ex.Message}");
         }
+        finally
+        {
+            if (ConnectedPlayers[playerSlot] == null)
+            {
+                ConnectedPlayers.Remove(playerSlot);
+            }
+        }
     }
+
+    private void OnPlayerDisconnect(CCSPlayerController? player, bool isForBot = false)
+    {
+        if (ConnectedPlayers.TryGetValue(player.Slot, out var connectedPlayer))
+        {
+            ConnectedPlayers.Remove(player.Slot);
+        }
+    }
+
 
     // Command for changing the player model alpha (transparency)
     [ConsoleCommand("css_selfmodelalpha", "Changes the alpha of your player model")]
