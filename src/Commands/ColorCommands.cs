@@ -45,7 +45,6 @@ namespace ImperfectModels
             }
             else
             {
-                Logger.LogWarning("The number that was input was not correct.");
                 commandInfo.ReplyToCommand("The number that you input was not correct. Try a number between 1 and 255.");
             }
         }
@@ -85,7 +84,6 @@ namespace ImperfectModels
             }
             else
             {
-                Logger.LogWarning("The number that was input was not correct.");
                 commandInfo.ReplyToCommand("The number that you input was not correct. Try a number between 1 and 255.");
             }
         }
