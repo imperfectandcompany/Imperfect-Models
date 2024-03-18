@@ -20,8 +20,6 @@ public class ImperfectModels : BasePlugin, IPluginConfig<Config>
     public override string ModuleDescription => "A plugin for handling player models.";
     public Config Config { get; set; } = new Config();
 
-    private Dictionary<int, CCSPlayerController> ConnectedPlayers = new Dictionary<int, CCSPlayerController>();
-
     public override void Load(bool hotReload)
     {
         RegisterEventHandler<EventPlayerConnectFull>((@event, info) =>
@@ -45,21 +43,6 @@ public class ImperfectModels : BasePlugin, IPluginConfig<Config>
                 return HookResult.Continue;
             }
         });
-
-        RegisterEventHandler<EventPlayerDisconnect>((@event, info) =>
-        {
-            var player = @event.Userid;
-
-            if (player.IsBot || !player.IsValid)
-            {
-                return HookResult.Continue;
-            }
-            else
-            {
-                OnPlayerDisconnect(player);
-                return HookResult.Continue;
-            }
-        });
     }
 
     public override void Unload(bool hotReload)
@@ -80,10 +63,6 @@ public class ImperfectModels : BasePlugin, IPluginConfig<Config>
 
     private void OnPlayerConnect(CCSPlayerController? player, bool isForBot = false)
     {
-        int playerSlot = player.Slot;
-
-        ConnectedPlayers[playerSlot] = new CCSPlayerController(player.Handle);
-
         try
         {
             if (player == null)
@@ -115,23 +94,7 @@ public class ImperfectModels : BasePlugin, IPluginConfig<Config>
         {
             Console.WriteLine($"Something bad happened: {ex.Message}");
         }
-        finally
-        {
-            if (ConnectedPlayers[playerSlot] == null)
-            {
-                ConnectedPlayers.Remove(playerSlot);
-            }
-        }
     }
-
-    private void OnPlayerDisconnect(CCSPlayerController? player, bool isForBot = false)
-    {
-        if (ConnectedPlayers.TryGetValue(player.Slot, out var connectedPlayer))
-        {
-            ConnectedPlayers.Remove(player.Slot);
-        }
-    }
-
 
     // Command for changing the player model alpha (transparency)
     [ConsoleCommand("css_selfmodelalpha", "Changes the alpha of your player model")]
@@ -184,13 +147,15 @@ public class ImperfectModels : BasePlugin, IPluginConfig<Config>
         var alphaPercentage = commandInfo.GetArg(1);
         int alphaPercentageInt = 0;
 
+        var connectedPlayers = Utilities.GetPlayers();
+
         var intParseSuccess = int.TryParse(alphaPercentage, out alphaPercentageInt);
 
         if (intParseSuccess)
         {
             try
             {
-                foreach (var connectedPlayer in ConnectedPlayers.Values)
+                foreach (var connectedPlayer in connectedPlayers)
                 {
                     connectedPlayer.PlayerPawn.Value.Render = Color.FromArgb(alphaPercentageInt, 255, 255, 255);
                     Utilities.SetStateChanged(connectedPlayer.PlayerPawn.Value, "CBaseModelEntity", "m_clrRender");
