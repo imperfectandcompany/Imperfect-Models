@@ -33,15 +33,3 @@ Type `css_modelalpha <number>` in console (server or client)
 Type `!modelalpha <number>` in chat
 
 `<number>` must be a number between 1 and 255
-
----
-
-### Set Self Player Model Alpha
-
-**This will set the model alpha value for your player model only**
-
-Type `css_selfmodelalpha <number>` in console (client only)
-
-Type `!selfmodelalpha <number>` in chat
-
-`<number>` must be a number between 1 and 255
