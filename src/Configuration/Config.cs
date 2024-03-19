@@ -8,6 +8,6 @@ namespace ImperfectModels.Configuration
         [JsonPropertyName("ConfigVersion")]
         public override int Version { get; set; } = 1;
 
-        public int DefaultAlpha { get; set; } = 254;
+        public int DefaultAlpha { get; set; } = 255;
     }
 }

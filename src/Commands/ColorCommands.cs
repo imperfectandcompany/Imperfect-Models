@@ -16,24 +16,22 @@ namespace ImperfectModels
         public void ChangeModelAlphaCommand(CCSPlayerController? player, CommandInfo commandInfo)
         {
             /// This argument is the number for the alpha
-            var alphaPercentage = commandInfo.GetArg(1);
-            int alphaPercentageInt = 0;
+            var newModelAlpha = commandInfo.GetArg(1);
+            int newModelAlphaInt = 0;
 
-            var connectedPlayers = Utilities.GetPlayers();
-
-            var intParseSuccess = int.TryParse(alphaPercentage, out alphaPercentageInt);
+            var intParseSuccess = int.TryParse(newModelAlpha, out newModelAlphaInt);
 
             if (intParseSuccess)
             {
                 try
                 {
-                    foreach (var connectedPlayer in connectedPlayers)
+                    foreach (var connectedPlayer in ConnectedPlayers)
                     {
-                        connectedPlayer.PlayerPawn.Value.Render = Color.FromArgb(alphaPercentageInt, 255, 255, 255);
-                        Utilities.SetStateChanged(connectedPlayer.PlayerPawn.Value, "CBaseModelEntity", "m_clrRender");
+                        ModelAlpha = newModelAlphaInt;
+                        player.PlayerPawn.Value.Render = SetPlayerPawnColor(player, ModelAlpha);
                     }
 
-                    commandInfo.ReplyToCommand($"All player models alpha set to {alphaPercentage}");
+                    commandInfo.ReplyToCommand($"All player models alpha set to {newModelAlpha}");
                 }
                 catch (Exception ex)
                 {

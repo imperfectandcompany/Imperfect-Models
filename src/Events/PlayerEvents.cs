@@ -1,11 +1,6 @@
-﻿using CounterStrikeSharp.API;
-using CounterStrikeSharp.API.Core;
-using System;
-using System.Collections.Generic;
+﻿using CounterStrikeSharp.API.Core;
+using Microsoft.Extensions.Logging;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImperfectModels
 {
@@ -34,7 +29,42 @@ namespace ImperfectModels
                     return HookResult.Continue;
                 }
             });
+
+            RegisterEventHandler<EventPlayerDisconnect>((@event, info) =>
+            {
+                var player = @event.Userid;
+
+                if (player.IsBot || !player.IsValid)
+                {
+                    return HookResult.Continue;
+                }
+                else
+                {
+                    OnPlayerDisconnect(player);
+                    return HookResult.Continue;
+                }
+            });
+
+            RegisterEventHandler<EventPlayerSpawned>((@event, info) =>
+            {
+                if (@event.Userid == null) return HookResult.Continue;
+
+                var player = @event.Userid;
+
+                if (player.IsBot || !player.IsValid || player == null)
+                {
+                    return HookResult.Continue;
+                }
+                else
+                {
+                    player.PlayerPawn.Value.Render = SetPlayerPawnColor(player, ModelAlpha);
+                    return HookResult.Continue;
+                }
+            });
+
+            RegisterListener<Listeners.OnTick>(PlayerOnTick);
         }
+
         private void OnPlayerConnect(CCSPlayerController? player, bool isForBot = false)
         {
             try
@@ -49,20 +79,67 @@ namespace ImperfectModels
                     return;
                 }
 
+                int playerSlot = player.Slot;
+
                 try
                 {
-                    player.PlayerPawn.Value.Render = Color.FromArgb(Config.DefaultAlpha, 255, 255, 255);
-                    Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseModelEntity", "m_clrRender");
+                    ConnectedPlayers[playerSlot] = new CCSPlayerController(player.Handle);
+
+                    player.PlayerPawn.Value.Render = SetPlayerPawnColor(player, ModelAlpha);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Something bad happened: {ex.Message}");
+                    Logger.LogWarning($"Something bad happened: {ex.Message}");
+                }
+                finally
+                {
+                    if (ConnectedPlayers[playerSlot] == null)
+                    {
+                        ConnectedPlayers.Remove(playerSlot);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Something bad happened: {ex.Message}");
+                Logger.LogWarning($"Something bad happened: {ex.Message}");
             }
+        }
+
+        private void OnPlayerDisconnect(CCSPlayerController? player, bool isForBot = false)
+        {
+            if (player == null) return;
+
+            try
+            {
+                if (ConnectedPlayers.TryGetValue(player.Slot, out var connectedPlayer))
+                {
+                    ConnectedPlayers.Remove(player.Slot);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Something bad happened: {ex.Message}");
+            }
+        }
+
+        private void PlayerOnTick()
+        {
+            try
+            {
+                foreach (CCSPlayerController player in ConnectedPlayers.Values)
+                {
+                    player.PlayerPawn.Value.Render = SetPlayerPawnColor(player, ModelAlpha);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Something bad happened: {ex.Message}");
+            }
+        }
+
+        private Color SetPlayerPawnColor(CCSPlayerController player, int alpha)
+        {
+            return Color.FromArgb(alpha, 255, 255, 255);
         }
     }
 }
