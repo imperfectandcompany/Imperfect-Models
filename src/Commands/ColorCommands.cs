@@ -2,7 +2,6 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
-using CounterStrikeSharp.API;
 using Microsoft.Extensions.Logging;
 
 namespace ImperfectModels
@@ -28,7 +27,7 @@ namespace ImperfectModels
                     foreach (var connectedPlayer in ConnectedPlayers)
                     {
                         ModelAlpha = newModelAlphaInt;
-                        player.PlayerPawn.Value.Render = SetPlayerPawnColor(player, ModelAlpha);
+                        connectedPlayer.Value.PlayerPawn.Value.Render = SetPlayerPawnColor(connectedPlayer.Value, ModelAlpha);
                     }
 
                     commandInfo.ReplyToCommand($"All player models alpha set to {newModelAlpha}");
