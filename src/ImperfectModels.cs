@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ImperfectModels;
 
-[MinimumApiVersion(80)]
+[MinimumApiVersion(199)]
 public partial class ImperfectModels : BasePlugin, IPluginConfig<Config>
 {
     public override string ModuleName => "Imperfect-Models";
