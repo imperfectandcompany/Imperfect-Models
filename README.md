@@ -5,7 +5,7 @@ A plugin for handling player models for CounterStrikeSharp.
 ---
 
 ## Requirements
-- [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp)
+- [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp) - Version 199+
 
 ---
 
