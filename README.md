@@ -28,8 +28,8 @@ After installation and initial run of the plugin, a configuration file will be c
 ### Set All Player Models Alpha
 **This will set the model alpha value for all connected player models**
 
-Type `css_modelalpha <number>` in console (server or client)
+Type `css_setmodelalpha <number>` in console (server or client)
 
-Type `!modelalpha <number>` in chat
+Type `!setmodelalpha <number>` in chat
 
 `<number>` must be a number between 1 and 255
