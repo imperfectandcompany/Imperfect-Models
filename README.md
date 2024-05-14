@@ -19,7 +19,7 @@ A plugin for handling player models for CounterStrikeSharp.
 
 After installation and initial run of the plugin, a configuration file will be created in the `game/csgo/addons/counterstrikesharp/configs/plugins/ImperfectModels/` directory.
 
-`DefaultAlpha` - This will be the default setting of the alpha (transparency) value for all player models. Use a number between 1 and 255. Any value under 254 will disable legs from being visible in first-person view.
+`DefaultAlpha` - This will be the default setting of the alpha (transparency) value for all player models. Use a number between 1 and 255. Any value 254 and below will disable the player model legs from being visible in first-person view.
 
 ---
 
@@ -28,8 +28,8 @@ After installation and initial run of the plugin, a configuration file will be c
 ### Set All Player Models Alpha
 **This will set the model alpha value for all connected player models**
 
-Type `css_setmodelalpha <number>` in console (server or client)
+Type `css_modelalpha <number>` in console (server or client)
 
-Type `!setmodelalpha <number>` in chat
+Type `!modelalpha <number>` in chat
 
 `<number>` must be a number between 1 and 255
