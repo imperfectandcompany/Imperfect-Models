@@ -21,6 +21,8 @@ public partial class ImperfectModels : BasePlugin, IPluginConfig<Config>
 
     public override void Load(bool hotReload)
     {
+        RegisterServerEvents();
+
         RegisterPlayerEvents();
     }
 
