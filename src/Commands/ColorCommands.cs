@@ -9,7 +9,7 @@ namespace ImperfectModels
     public partial class ImperfectModels
     {
         // Command for changing all players model alpha (transparency)
-        [ConsoleCommand("css_setmodelalpha", "Set the alpha of all player models")]
+        [ConsoleCommand("css_modelalpha", "Set the alpha of all player models")]
         [CommandHelper(minArgs: 1, usage: "<number for alpha ex. 50>", whoCanExecute: CommandUsage.CLIENT_AND_SERVER)]
         [RequiresPermissions("@css/root")]
         public void ChangeModelAlphaCommand(CCSPlayerController? player, CommandInfo commandInfo)
